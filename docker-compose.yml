@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  scentory-app:
+    build: .
+    container_name: scentory-app
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://scentory_user:8%mGY76B$N?WuCp@db:5432/scentory_db
+    networks:
+      - scentory-internal
+      - souwers-feedback-server_feedback # Подключаемся к сети старого Caddy!
+
+  db:
+    image: postgres:15-alpine
+    container_name: scentory-db
+    restart: always
+    environment:
+      POSTGRES_USER: scentory_user
+      POSTGRES_PASSWORD: 8%mGY76B$N?WuCp
+      POSTGRES_DB: scentory_db
+    volumes:
+      - scentory_pgdata:/var/lib/postgresql/data
+    networks:
+      - scentory-internal
+
+networks:
+  scentory-internal:
+  souwers-feedback-server_feedback:
+    external: true
+
+volumes:
+  scentory_pgdata:
